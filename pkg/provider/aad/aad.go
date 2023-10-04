@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strings"
 	"time"
@@ -176,6 +177,13 @@ func (ac *Client) Authenticate(loginDetails *creds.LoginDetails) (string, error)
 AuthProcessor:
 	for {
 		resBody, _ = io.ReadAll(res.Body)
+		respDump, err := httputil.DumpResponse(res, true)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("RESPONSE:\n%s", respDump)
+		fmt.Printf("\n%s", resBody)
 		resBodyStr = string(resBody)
 		// reset res.Body so it can be read again later if required
 		res.Body = io.NopCloser(bytes.NewBuffer(resBody))
